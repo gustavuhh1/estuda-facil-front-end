@@ -1,5 +1,12 @@
 import styled from "styled-components";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 const Box = styled.div`
   background: #ffffff;
   border-radius: 12px;
@@ -18,6 +25,33 @@ export default function AdminAPI() {
     <Box>
       <Title>Admin API</Title>
       <p>Teste de funcionalidades do painel administrativo.</p>
+      <div className="py-8 flex flex-col gap-6">
+        <Dialog>
+          <DialogTrigger className="bg-zinc-400 rounded p-2">
+            CRUD Professor
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Administrar Professores</DialogTitle>
+
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog>
+          <DialogTrigger className="bg-zinc-400 rounded p-2">
+            CRUD Alunos
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Administrar Alunos</DialogTitle>
+
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
     </Box>
   );
 }

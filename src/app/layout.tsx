@@ -1,5 +1,5 @@
 import { Roboto } from "next/font/google";
-import './globals.css'
+import "./global.css"
 import GlobalStyle from "@/styles/GlobalStyle";
 import StyledComponentsRegistry from "@/lib/registry"; // se você estiver usando SSR
 import type { Metadata } from "next";

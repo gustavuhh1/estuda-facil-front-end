@@ -1,4 +1,12 @@
 import styled from "styled-components";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const Box = styled.div`
   background: #ffffff;
@@ -18,6 +26,21 @@ export default function TokenRegistroAPI() {
     <Box>
       <Title>Token Registro API</Title>
       <p>Teste do registro via token para novos usuários.</p>
+
+      <div className="py-8 flex flex-col gap-6">
+        <Dialog>
+          <DialogTrigger className="bg-zinc-400 rounded p-2">
+            Validar Token
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Insira os 4 dígitos do Token</DialogTitle>
+
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
     </Box>
   );
 }

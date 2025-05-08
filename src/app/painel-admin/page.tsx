@@ -8,7 +8,7 @@ export default function PainelAdminPage() {
     <div>
       {/* Adicionar tag de Auth */}
       <Nav />
-      <h1 className="text-3xl p-[2rem]">Painel Admin (Restrito)</h1>
+      <h1 className="text-3xl py-6 px-12">Painel Admin (Restrito)</h1>
       <ContainerApiTest />
     </div>
   );

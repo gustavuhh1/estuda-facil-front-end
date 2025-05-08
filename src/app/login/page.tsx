@@ -18,6 +18,9 @@ const Container = styled.div`
 const Logo = styled.div`
   text-align: center;
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   img {
     width: 70px;
@@ -46,8 +49,7 @@ const FormWrapper = styled.div`
     display: grid;
     grid-template-rows: repeat(1, 1fr);
     align-items: center;
-    gap: 8\px;
-    
+    gap: 12px;
   }
 `;
 
@@ -59,9 +61,10 @@ const Label = styled.label`
 const Input = styled.input`
   padding: 0.6rem;
   border-radius: 4px;
+  background-color: white;
   border: none;
   font-size: 1rem;
-  margin-top: -6px;
+  margin-top: -12px;
 `;
 
 const Button = styled.button`
@@ -132,14 +135,14 @@ export default function LoginPage() {
 
       <FormWrapper>
         <div className="divLabels">
-          <Label>Email ou Telefone</Label>
+          <Label>Email ou Telefone:</Label>
           <Input
             type="text"
             value={emailOuTelefone}
             onChange={(e) => setEmailOuTelefone(e.target.value)}
           />
 
-          <Label>Senha</Label>
+          <Label>Senha:</Label>
           <Input
             type="password"
             value={senha}

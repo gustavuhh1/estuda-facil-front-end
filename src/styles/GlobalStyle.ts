@@ -15,13 +15,6 @@ const GlobalStyle = createGlobalStyle`
     color: #111;
   }
 
-  button, input, textarea, select {
-    font-family: inherit;
-    outline: none;
-    border: none;
-    background: none;
-  }
-
   a {
     color: inherit;
     text-decoration: none;
