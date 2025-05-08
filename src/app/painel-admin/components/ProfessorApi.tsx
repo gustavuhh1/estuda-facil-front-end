@@ -1,5 +1,14 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import styled from "styled-components";
+import { TarefaForm } from "./TarefaForm";
+import { TarefaList } from "./TarefaList";
 
 const Box = styled.div`
   background: #ffffff;
@@ -14,16 +23,6 @@ const Title = styled.h2`
   color: #2d4d3a;
 `;
 
-// function FormAluno(){
-//   return(
-//     <Form>
-//       <form>
-        
-//       </form>
-//     </Form>
-//   )
-// }
-
 export default function ProfessorAPI() {
   return (
     <Box>
@@ -37,8 +36,9 @@ export default function ProfessorAPI() {
             <DialogHeader>
               <DialogTitle>Criando Tarefa</DialogTitle>
 
-              {/* Inserir Formulario para criar Aluno */}
-              <DialogDescription></DialogDescription>
+              <DialogDescription>
+                <TarefaForm isUpdate={false} />
+              </DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>
@@ -49,38 +49,26 @@ export default function ProfessorAPI() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Insira os dados do Aluno:</DialogTitle>
-
-              {/* Inserir Formulario para criar Aluno */}
-              <DialogDescription></DialogDescription>
+              <DialogTitle>Atualizar Tarefa</DialogTitle>
+              <DialogDescription>
+                <TarefaForm isUpdate={true} />
+              </DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>
 
         <Dialog>
           <DialogTrigger className="bg-zinc-400 rounded p-2">
-            Excluir Tarefa
+            Ver Tarefas
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Insira os dados do Aluno:</DialogTitle>
+              <DialogTitle>Tarefas Atuais</DialogTitle>
 
               {/* Inserir Formulario para criar Aluno */}
-              <DialogDescription></DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog>
-          <DialogTrigger className="bg-zinc-400 rounded p-2">
-            Mandar mensagem
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Insira os dados do Aluno:</DialogTitle>
-
-              {/* Inserir Formulario para criar Aluno */}
-              <DialogDescription></DialogDescription>
+              <DialogDescription>
+                <TarefaList/>
+              </DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>
