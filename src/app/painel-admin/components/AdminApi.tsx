@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ProfessorCRUD } from "./ProfessorCRUD";
 const Box = styled.div`
   background: #ffffff;
   border-radius: 12px;
@@ -34,7 +35,7 @@ export default function AdminAPI() {
             <DialogHeader>
               <DialogTitle>Administrar Professores</DialogTitle>
 
-              <DialogDescription></DialogDescription>
+              <DialogDescription><ProfessorCRUD/></DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>
@@ -46,6 +47,18 @@ export default function AdminAPI() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Administrar Alunos</DialogTitle>
+
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+        <Dialog>
+          <DialogTrigger className="bg-zinc-400 rounded p-2">
+            CRUD Turmas
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Administrar Turmas</DialogTitle>
 
               <DialogDescription></DialogDescription>
             </DialogHeader>
