@@ -6,7 +6,7 @@ export interface User {
   class?: string;
 }
 
-export interface Tarefa {
+export interface Task {
   id: string;
   title: string;
   description: string;
