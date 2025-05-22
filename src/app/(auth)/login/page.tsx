@@ -70,20 +70,26 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        // Tratamento especial para o usuário de demonstração
         if (data.email === "gustavo@estudafacil.edu.br" && data.password === "password") {
-          // Tenta novamente com credenciais exatas
           const demoResult = await signIn("credentials", {
             email: "gustavo@estudafacil.edu.br",
             password: "password",
             redirect: false,
           });
-          
+
           if (demoResult?.error) {
             throw new Error("Erro no login de demonstração");
           }
+          router.push("/dashboard");
+          return;
+        }
+
+        if (result.error.includes("Credenciais inválidas")) {
+          throw new Error("Email ou senha incorretos");
+        } else if (result.error.includes("Sem resposta")) {
+          throw new Error("Servidor indisponível. Tente novamente mais tarde.");
         } else {
-          throw new Error("Credenciais inválidas");
+          throw new Error(result.error);
         }
       }
 
@@ -92,9 +98,7 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Erro no login:", error);
       setError(
-        error instanceof Error 
-          ? error.message 
-          : "Erro ao fazer login. Tente novamente."
+        error instanceof Error ? error.message : "Erro ao fazer login. Tente novamente."
       );
     } finally {
       setIsLoading(false);
@@ -139,11 +143,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="seu@email.com" 
-                        {...field} 
-                        autoComplete="username"
-                      />
+                      <Input placeholder="seu@email.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -156,12 +156,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="password" 
-                        placeholder="******" 
-                        {...field} 
-                        autoComplete="current-password"
-                      />
+                      <Input type="password" placeholder="******" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -174,13 +169,12 @@ export default function LoginPage() {
           </Form>
 
           <div className="mt-4 text-sm text-center text-muted-foreground">
-            <div className="flex flex-col items-center mt-6 space-y-2">
+            <div className="flex justify-center space-x-4 mt-6">
               <div>
                 <strong>Demonstração:</strong>
               </div>
-              <div className="text-center">
-                <p>Email: gustavo@estudafacil.edu.br</p>
-                <p>Senha: password</p>
+              <div>
+                <p>gustavo@estudafacil.edu.br / password</p>
               </div>
             </div>
           </div>

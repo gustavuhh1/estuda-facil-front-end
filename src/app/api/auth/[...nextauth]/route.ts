@@ -1,17 +1,17 @@
-import NextAuth, { SessionStrategy } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
+import type { NextAuthOptions } from "next-auth";
 
-// Usuário mock para demonstração
+// Configuração do usuário de demonstração
 const DEMO_USER = {
   id: "demo-user-id",
   email: "gustavo@estudafacil.edu.br",
   name: "Gustavo Martins",
-  role: "student",
+  role: "admin",
   token: "demo-token-123456",
 };
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -29,24 +29,20 @@ export const authOptions = {
             return DEMO_USER;
           }
 
-          // Login real com backend Java
-          const response = await axios.post("http://seu-backend-java/api/auth/login", {
+          // Login real com backend (substitua pela sua chamada API)
+          // const response = await fetch(...)
+          // const user = await response.json();
+
+          // Simulando resposta da API
+          const user = {
+            id: "user-id",
             email: credentials?.email,
-            password: credentials?.password,
-          });
+            name: "Usuário Teste",
+            role: "student",
+            token: "jwt-token-simulado",
+          };
 
-          const user = response.data;
-
-          if (user && user.token) {
-            return {
-              id: user.id || "user-id",
-              email: user.email,
-              name: user.name || user.email,
-              role: user.role || "student",
-              token: user.token,
-            };
-          }
-          return null;
+          return user || null;
         } catch (error) {
           console.error("Erro de autenticação:", error);
           return null;
@@ -54,6 +50,13 @@ export const authOptions = {
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 dias
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -64,9 +67,11 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
-      session.user.role = token.role;
-      session.user.id = token.id;
+      if (token) {
+        session.accessToken = token.accessToken as string;
+        session.user.role = token.role as string;
+        session.user.id = token.id as string;
+      }
       return session;
     },
   },
@@ -75,9 +80,7 @@ export const authOptions = {
     error: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: SessionStrategy.JWT,
-  },
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);
