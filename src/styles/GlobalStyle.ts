@@ -8,16 +8,12 @@ const GlobalStyle = createGlobalStyle`
 
   html, body {
     height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Poppins', monospace;
     background-color: #fef1e6;
     color: #111;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
   }
 
   button {

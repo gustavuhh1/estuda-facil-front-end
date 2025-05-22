@@ -2,11 +2,11 @@
 
 import { Nav } from "@/components/Nav";
 
-export default function InicioPage() {
+export default function Calendario() {
   return (
     <>
       <Nav />
-      <h1 style={{ padding: "2rem" }}>Página Início</h1>
+      <h1 style={{ padding: "2rem" }}>Calendario</h1>
     </>
   );
 }
