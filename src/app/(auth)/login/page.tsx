@@ -17,7 +17,6 @@ import {
   Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import api from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,6 +24,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { styled } from "styled-components";
 import { z } from "zod";
+import { signIn } from "next-auth/react";
 
 const Container = styled.div`
   width: 100%;
@@ -46,8 +46,9 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const useRoute = useRouter();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -59,32 +60,44 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
+    setError("");
+
     try {
-      if (data.email == "gustavo@email.com" && data.password == "123456") {
-        alert("Login bem-sucedido: (SEM API) @Test");
-        useRoute.push("/dashboard");
-        return;
-        //redirecionar pagina admin
-      }
-      const response = await api.post("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
       });
 
-      if (response.status != 200) {
-        throw new Error("Credenciais inválidas");
+      if (result?.error) {
+        // Tratamento especial para o usuário de demonstração
+        if (data.email === "gustavo@estudafacil.edu.br" && data.password === "password") {
+          // Tenta novamente com credenciais exatas
+          const demoResult = await signIn("credentials", {
+            email: "gustavo@estudafacil.edu.br",
+            password: "password",
+            redirect: false,
+          });
+          
+          if (demoResult?.error) {
+            throw new Error("Erro no login de demonstração");
+          }
+        } else {
+          throw new Error("Credenciais inválidas");
+        }
       }
 
-      const result = await response.data();
-      console.log("Login bem-sucedido:", result);
-      form.reset();
-      // Redireciona ou armazena o token (ex.: localStorage)
+      // Redireciona para dashboard após login bem-sucedido
+      router.push("/dashboard");
     } catch (error) {
       console.error("Erro no login:", error);
-      alert("Erro ao fazer login. Tente novamente.");
-    }finally {
-      setIsLoading(false)
+      setError(
+        error instanceof Error 
+          ? error.message 
+          : "Erro ao fazer login. Tente novamente."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,6 +124,12 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {error && (
+            <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-sm">
+              {error}
+            </div>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -120,7 +139,11 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="seu@email.com" {...field} />
+                      <Input 
+                        placeholder="seu@email.com" 
+                        {...field} 
+                        autoComplete="username"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +156,12 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="******" 
+                        {...field} 
+                        autoComplete="current-password"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -146,12 +174,13 @@ export default function LoginPage() {
           </Form>
 
           <div className="mt-4 text-sm text-center text-muted-foreground">
-            <div className="flex justify-center space-x-4 mt-6">
+            <div className="flex flex-col items-center mt-6 space-y-2">
               <div>
                 <strong>Demonstração:</strong>
               </div>
-              <div>
-                <p>gustavo@estudafacil.edu.br / password</p>
+              <div className="text-center">
+                <p>Email: gustavo@estudafacil.edu.br</p>
+                <p>Senha: password</p>
               </div>
             </div>
           </div>
