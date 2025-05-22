@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "@/types";
 import { toast } from "sonner";
+import api from "@/lib/axios";
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -32,18 +33,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const loggedInUser = await authenticateUser(email, password);
+      const response = await api.post("/auth/login", {email, password});
       setUser(loggedInUser);
-      localStorage.setItem("estudaFacilUser", JSON.stringify(loggedInUser));
-      toast({
-        title: "Login realizado com sucesso",
+      localStorage.setItem("estudaFacilUser", JSON.stringify(response));
+      toast.success("Login realizado com sucesso", {
         description: `Bem-vindo(a), ${loggedInUser.name}!`,
       });
     } catch (error) {
-      toast({
-        title: "Falha no login",
+      toast.error("Falha no login",{
         description: "Email ou senha incorretos. Tente novamente.",
-        variant: "destructive",
       });
       throw error;
     } finally {

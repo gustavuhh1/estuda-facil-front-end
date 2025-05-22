@@ -1,11 +1,8 @@
 "use client";
 
-import { Nav } from "@/components/Nav";
-
-export default function MensagensPage() {
+export default function Mensagens() {
   return (
     <>
-      <Nav />
       <h1 style={{ padding: "2rem" }}>Página Mensagens</h1>
     </>
   );

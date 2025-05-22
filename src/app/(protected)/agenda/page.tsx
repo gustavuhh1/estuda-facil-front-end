@@ -1,11 +1,8 @@
 "use client";
 
-import { Nav } from "@/components/Nav";
-
-export default function Calendario() {
+export default function Agenda() {
   return (
     <>
-      <Nav />
       <h1 style={{ padding: "2rem" }}>Calendario</h1>
     </>
   );

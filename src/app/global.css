@@ -110,6 +110,25 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
+main {
+  scroll-behavior: smooth;
+}
+
+.subject-badge {
+  @apply text-xs px-2 py-1 rounded-md capitalize;
+}
+
+.subject-geografia {
+  @apply bg-green-100 text-green-800;
+}
+
+.subject-matemática {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.subject-redacao {
+  @apply bg-purple-100 text-purple-800;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

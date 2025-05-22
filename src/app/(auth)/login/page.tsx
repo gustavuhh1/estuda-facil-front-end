@@ -62,7 +62,7 @@ export default function LoginPage() {
     try {
       if (data.email == "gustavo@email.com" && data.password == "123456") {
         alert("Login bem-sucedido: (SEM API) @Test");
-        useRoute.push("/painel-admin");
+        useRoute.push("/dashboard");
         return;
         //redirecionar pagina admin
       }
