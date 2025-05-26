@@ -68,32 +68,11 @@ export default function LoginPage() {
         password: data.password,
         redirect: false,
       });
+      console.log(result)
 
-      if (result?.error) {
-        if (data.email === "gustavo@estudafacil.edu.br" && data.password === "password") {
-          const demoResult = await signIn("credentials", {
-            email: "gustavo@estudafacil.edu.br",
-            password: "password",
-            redirect: false,
-          });
-
-          if (demoResult?.error) {
-            throw new Error("Erro no login de demonstração");
-          }
-          router.push("/dashboard");
-          return;
-        }
-
-        if (result.error.includes("Credenciais inválidas")) {
-          throw new Error("Email ou senha incorretos");
-        } else if (result.error.includes("Sem resposta")) {
-          throw new Error("Servidor indisponível. Tente novamente mais tarde.");
-        } else {
-          throw new Error(result.error);
-        }
+      if(!result?.ok){
+        throw new Error("Email/Senha incorreto. Tente novamente.")
       }
-
-      // Redireciona para dashboard após login bem-sucedido
       router.push("/dashboard");
     } catch (error) {
       console.error("Erro no login:", error);
@@ -143,7 +122,12 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="seu@email.com" {...field} />
+                      <Input
+                      type="email"
+                        placeholder="seu@email.com"
+                        autoComplete="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -156,7 +140,13 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <Input
+                        aria-label="password"
+                        type="password"
+                        placeholder="******"
+                        autoComplete="current-password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
