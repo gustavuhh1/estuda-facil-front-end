@@ -1,9 +1,10 @@
-import axios from "axios";
+import api from "@/lib/axios";
+import { LoginResponse } from "@/types/auth";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -11,32 +12,59 @@ const authOptions: NextAuthOptions = {
         email: { label: "email", type: "email" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials, req) {
-        // TODO: Trocar user por requisição http
-        const res = await axios.post("/auth/login", {
+      async authorize(credentials) {
+        const res = await api.post<LoginResponse>("/auth/login", {
           email: credentials?.email,
           password: credentials?.password
         })
-        const user = await res.data;
+        
+        if (res.status !== 200) return null;
 
-        const user = {
-          id: "9b4f3672-f887-4055-a177-fec19da37ebd",
-          email: "gustavo@email.com",
-          password: "password",
-          role: "COORDENACAO",
+        console.log(res.data)
+        const {token, usuario} = res.data;
+
+        return {
+          ...usuario, 
+          accessToken: token, 
         };
-
-        const isValidEmail = user.email === credentials?.email;
-        const isValidPassword = user.password === credentials?.password;
-        if (!isValidEmail || !isValidPassword) {
-          return false;
-        }
-        return user;
       },
     }),
   ],
   pages: {
     signIn: '/login',
+  },
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      if (user) {
+        return {
+          ...token,
+          ...user
+        }
+      }
+      return token;
+    },
+
+    session: async ({ session, token }) => {
+      session.user = {
+        id: token.id as string,
+        email: token.email as string,
+        role: token.role as
+          | "ALUNO"
+          | "PROFESSOR"
+          | "RESPONSAVEL"
+          | "COORDENACAO",
+        nome: token.nome as string,
+        dataNascimento: token.dataNascimento as string | Date | null,
+        matricula: token.matricula as string | undefined,
+        turmaId: token.turmaId as number | undefined,
+        disciplina: token.disciplina as string | null,
+        telefoneContato: token.telefoneContato as string | null,
+        departamento: token.departamento as string | null | undefined,
+        accessToken: token.accessToken as string,
+      };
+      console.log("Sessao:::" + JSON.stringify(session));
+      return session;
+    }
   }
 };
 

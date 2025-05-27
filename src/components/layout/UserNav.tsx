@@ -1,3 +1,5 @@
+"use client"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown, User, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export function UserNav() {
   return (
@@ -43,7 +46,7 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Sair</span>
+          <Link href={'/login'} onClick={() => signOut()}>Sair</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

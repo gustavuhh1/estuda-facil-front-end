@@ -68,7 +68,6 @@ export default function LoginPage() {
         password: data.password,
         redirect: false,
       });
-      console.log(result)
 
       if(!result?.ok){
         throw new Error("Email/Senha incorreto. Tente novamente.")
@@ -114,7 +113,11 @@ export default function LoginPage() {
           )}
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              name="Credentials"
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -123,7 +126,7 @@ export default function LoginPage() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                      type="email"
+                        type="email"
                         placeholder="seu@email.com"
                         autoComplete="email"
                         {...field}
@@ -164,7 +167,7 @@ export default function LoginPage() {
                 <strong>Demonstração:</strong>
               </div>
               <div>
-                <p>gustavo@estudafacil.edu.br / password</p>
+                <p>[CARGO]coordenador@teste.com / 123456</p>
               </div>
             </div>
           </div>

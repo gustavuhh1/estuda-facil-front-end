@@ -1,12 +1,19 @@
-// types/next-auth.d.ts
-import "next-auth";
+import { Usuario } from "./auth";
 
 declare module "next-auth" {
-  interface User {
-    role: "ALUNO" | "PROFESSOR" | "COORDENACAO";
+  interface Session {
+    user: Usuario & {
+      accessToken?: string;
+    };
   }
 
-  interface Session extends DefaultSession {
-    user?: User;
+  interface User extends Usuario{
+    accessToken: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends Usuario{
+    accessToken: string;
   }
 }

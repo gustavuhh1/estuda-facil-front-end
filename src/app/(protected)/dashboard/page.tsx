@@ -1,7 +1,10 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDistanceToNow, parse, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar, MessageSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -93,10 +96,12 @@ export default function DashboardPage() {
   const nextDelivery = dashboardData.recentActivities[0];
   const nextDeliveryDate = parseDate(nextDelivery.date);
 
+  const { data: session } = useSession();
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold tracking-tight">
-        Bem-vindo(a), {dashboardData.user?.name}!
+        Bem-vindo(a), {session?.user.nome ?? ""}!
       </h1>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
