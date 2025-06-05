@@ -65,6 +65,9 @@ export const authOptions: NextAuthOptions = {
       console.log("Sessao:::" + JSON.stringify(session));
       return session;
     }
+  },
+  session: {
+    strategy: "jwt"
   }
 };
 

@@ -1,5 +1,6 @@
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
+import { Toaster  } from "sonner";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,9 +12,9 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
       <div className="flex flex-col flex-1">
         {/* Topbar fixa */}
         <Topbar />
-
         {/* Conteúdo rolável */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
+        <Toaster/>
       </div>
     </div>
   );

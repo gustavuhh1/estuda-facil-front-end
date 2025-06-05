@@ -1,107 +1,104 @@
-"use client"
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDistanceToNow, parse, format } from "date-fns";
+import api from "@/lib/axios";
+import { formatDistanceToNow, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar, MessageSquare } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+interface Tarefa {
+  id: number;
+  titulo: string;
+  dataEntrega: string;
+  descricao: string;
+  turma?: {
+    nome: string;
+    professor: string;
+    disciplina: string;
+  };
+}
+
+interface Mensagem {
+  id: number;
+  remetente: string;
+  conteudo: string;
+  dataEnvio: string;
+  lida: boolean;
+}
+
+interface DashboardData {
+  tarefasPendentes: Tarefa[];
+  mensagensNaoLidas: Mensagem[];
+  mensagensRecentes: Mensagem[];
+}
 
 export default function DashboardPage() {
-  // TODO: Substituir por chamada à API
-  // const { data: dashboardData, isLoading } = api.dashboard.getData.useQuery();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
 
-  // Função para parsear datas em diferentes formatos
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true);
+
+        const tarefasResponse = await api.get("/tarefa");
+        const tarefasPendentes = tarefasResponse.data;
+
+        const userId = session?.user?.id; // Você precisará adaptar para pegar o UUID do usuário
+        // Buscar mensagens recentes
+        const mensagensRecentes = userId
+          ? (await api.get(`/mensagens/recebidas?destinatarioId=${userId}`)).data
+          : [];
+
+        setDashboardData({
+          tarefasPendentes,
+          mensagensNaoLidas: mensagensRecentes.filter((m: Mensagem) => !m.lida),
+          mensagensRecentes: mensagensRecentes.slice(0, 3), // Pegar apenas as 3 mais recentes
+        });
+      } catch (error) {
+        console.error("Erro ao carregar dados do dashboard:", error);
+        toast.error("Erro", {
+          description: "Não foi possível carregar os dados do dashboard",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (session) {
+      fetchDashboardData();
+    }
+  }, [session]);
+
   const parseDate = (dateString: string) => {
     try {
-      // Tenta parsear no formato "ddmmyyyy" (23052025)
-      if (/^\d{8}$/.test(dateString)) {
-        return parse(dateString, "ddMMyyyy", new Date());
-      }
-      // Tenta parsear no formato "dd/MM/yyyy" (24/05/2025)
-      if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
-        return parse(dateString, "dd/MM/yyyy", new Date());
-      }
-      // Se não reconhecer o formato, retorna data inválida
-      return new Date(NaN);
+      return new Date(dateString);
     } catch {
       return new Date(NaN);
     }
   };
 
-  // Dados mockados (remover quando conectar ao backend)
-  const dashboardData = {
-    user: {
-      name: "Gustavo Martins",
-    },
-    stats: {
-      pendingActivities: 3,
-      unreadMessages: 2,
-    },
-    recentActivities: [
-      {
-        id: 1,
-        title: "Atividade Geografia",
-        date: "23052025", // 23/05/2025
-        subject: "geografia",
-        teacher: "Prof. Renato Augusto",
-        description:
-          "Estudar os nomes dos continentes e oceanos do mundo (páginas 12 a 15 do livro).",
-      },
-      {
-        id: 2,
-        title: "Atividade Matemática",
-        date: "24/05/2025",
-        subject: "matemática",
-        teacher: "Prof. Ana Paula",
-        description: "Resolver os exercícios de álgebra (páginas 45 a 47).",
-      },
-      {
-        id: 3,
-        title: "Atividade Redação",
-        date: "25/05/2025",
-        subject: "redacao",
-        teacher: "Prof. Pedro Cabral",
-        description: "Escrever uma redação dissertativa sobre meio ambiente.",
-      },
-    ],
-    recentMessages: [
-      {
-        id: 1,
-        sender: "Prof. Renato Augusto",
-        content:
-          "Lembrem-se que as atividades de Geografia devem ser entregues até quinta-feira.",
-        sentAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 dias atrás
-        read: true,
-      },
-      {
-        id: 2,
-        sender: "Diretora Marcela M",
-        content:
-          "Informamos que no próximo dia 27/05/2025 não haverá aula devido à Reunião Pedagógica dos professores.",
-        sentAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 dia atrás
-        read: false,
-      },
-      {
-        id: 3,
-        sender: "Prof. Ana Paula",
-        content: "A aula de Matemática de amanhã será no laboratório de informática.",
-        sentAt: new Date(Date.now() - 23 * 60 * 60 * 1000), // 23 horas atrás
-        read: false,
-      },
-    ],
-  };
+  if (isLoading) {
+    return <div>Carregando...</div>;
+  }
 
-  // Próxima entrega (pega a primeira atividade)
-  const nextDelivery = dashboardData.recentActivities[0];
-  const nextDeliveryDate = parseDate(nextDelivery.date);
+  if (!dashboardData) {
+    return <div>Não foi possível carregar os dados</div>;
+  }
 
-  const { data: session } = useSession();
+  // Próxima entrega (pega a primeira tarefa)
+  const nextDelivery = dashboardData.tarefasPendentes[0];
+  const nextDeliveryDate = nextDelivery ? parseDate(nextDelivery.dataEntrega) : null;
 
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold tracking-tight">
-        Bem-vindo(a), {session?.user.nome ?? ""}!
+        Bem-vindo(a), {session?.user?.nome ?? ""}!
       </h1>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -111,16 +108,16 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {dashboardData.stats.pendingActivities}
+              {dashboardData.tarefasPendentes.length}
             </div>
             <p className="text-xs text-muted-foreground">
-              {dashboardData.stats.pendingActivities === 1
+              {dashboardData.tarefasPendentes.length === 1
                 ? "atividade não concluída"
                 : "atividades não concluídas"}
             </p>
             <div className="mt-4">
               <Link
-                href="/calendar"
+                href="/agenda"
                 className="text-sm text-primary flex items-center hover:underline"
               >
                 <Calendar className="w-4 h-4 mr-1" />
@@ -135,15 +132,15 @@ export default function DashboardPage() {
             <CardTitle className="text-lg">Mensagens não lidas</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{dashboardData.stats.unreadMessages}</div>
+            <div className="text-3xl font-bold">{dashboardData.mensagensNaoLidas.length}</div>
             <p className="text-xs text-muted-foreground">
-              {dashboardData.stats.unreadMessages === 1
+              {dashboardData.mensagensNaoLidas.length === 1
                 ? "mensagem nova"
                 : "mensagens novas"}
             </p>
             <div className="mt-4">
               <Link
-                href="/messages"
+                href="/mensagens"
                 className="text-sm text-primary flex items-center hover:underline"
               >
                 <MessageSquare className="w-4 h-4 mr-1" />
@@ -158,21 +155,27 @@ export default function DashboardPage() {
             <CardTitle className="text-lg">Próxima entrega</CardTitle>
           </CardHeader>
           <CardContent>
-            {dashboardData.stats.pendingActivities > 0 ? (
+            {nextDelivery ? (
               <>
                 <div className="space-y-1">
-                  <h3 className="font-medium">{nextDelivery.title}</h3>
+                  <h3 className="font-medium">{nextDelivery.titulo}</h3>
                   <div className="flex items-center">
-                    <span className={`subject-badge subject-${nextDelivery.subject}`}>
-                      {nextDelivery.subject}
+                    <span
+                      className={`subject-badge subject-${
+                        nextDelivery.turma?.disciplina || "outro"
+                      }`}
+                    >
+                      {nextDelivery.turma?.disciplina || "Sem disciplina"}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Vence{" "}
-                    {formatDistanceToNow(nextDeliveryDate, {
-                      locale: ptBR,
-                      addSuffix: true,
-                    })}
+                    {nextDeliveryDate
+                      ? formatDistanceToNow(nextDeliveryDate, {
+                          locale: ptBR,
+                          addSuffix: true,
+                        })
+                      : "Data inválida"}
                   </p>
                 </div>
                 <div className="mt-4">
@@ -198,29 +201,33 @@ export default function DashboardPage() {
             <CardTitle>Últimas Atividades</CardTitle>
           </CardHeader>
           <CardContent>
-            {dashboardData.stats.pendingActivities > 0 ? (
+            {dashboardData.tarefasPendentes.length > 0 ? (
               <div className="space-y-4">
-                {dashboardData.recentActivities.map((task) => {
-                  const taskDate = parseDate(task.date);
+                {dashboardData.tarefasPendentes.slice(0, 3).map((task) => {
+                  const taskDate = parseDate(task.dataEntrega);
                   const formattedDate = isNaN(taskDate.getTime())
-                    ? task.date // Se não conseguir parsear, mostra o valor original
+                    ? task.dataEntrega
                     : format(taskDate, "dd/MM/yyyy");
 
                   return (
                     <div key={task.id} className="border-b pb-4 last:border-0 last:pb-0">
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="font-medium">{task.title}</div>
+                          <div className="font-medium">{task.titulo}</div>
                           <div className="flex items-center mt-1">
-                            <span className={`subject-badge subject-${task.subject}`}>
-                              {task.subject}
+                            <span
+                              className={`subject-badge subject-${
+                                task.turma?.disciplina || "outro"
+                              }`}
+                            >
+                              {task.turma?.disciplina || "Sem disciplina"}
                             </span>
                             <span className="text-sm text-muted-foreground ml-2">
-                              {task.teacher}
+                              {task.turma?.professor || "Professor não informado"}
                             </span>
                           </div>
                           <p className="text-sm mt-2 text-muted-foreground line-clamp-2">
-                            {task.description}
+                            {task.descricao}
                           </p>
                         </div>
                         <div className="text-sm text-muted-foreground">
@@ -244,31 +251,37 @@ export default function DashboardPage() {
             <CardTitle>Mensagens Recentes</CardTitle>
           </CardHeader>
           <CardContent>
-            {dashboardData.recentMessages.length > 0 ? (
+            {dashboardData.mensagensRecentes.length > 0 ? (
               <div className="space-y-4">
-                {dashboardData.recentMessages.map((message) => (
-                  <div key={message.id} className="border-b pb-4 last:border-0 last:pb-0">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium">{message.sender}</span>
-                          {!message.read && (
-                            <span className="inline-block h-2 w-2 bg-primary rounded-full ml-2"></span>
-                          )}
-                        </div>
-                        <p className="text-sm mt-1 text-muted-foreground line-clamp-2">
-                          {message.content}
-                        </p>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {formatDistanceToNow(message.sentAt, {
-                            locale: ptBR,
-                            addSuffix: true,
-                          })}
+                {dashboardData.mensagensRecentes.map((message) => {
+                  const sentAt = parseDate(message.dataEnvio);
+                  return (
+                    <div
+                      key={message.id}
+                      className="border-b pb-4 last:border-0 last:pb-0"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium">{message.remetente}</span>
+                            {!message.lida && (
+                              <span className="inline-block h-2 w-2 bg-primary rounded-full ml-2"></span>
+                            )}
+                          </div>
+                          <p className="text-sm mt-1 text-muted-foreground line-clamp-2">
+                            {message.conteudo}
+                          </p>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {formatDistanceToNow(sentAt, {
+                              locale: ptBR,
+                              addSuffix: true,
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">Nenhuma mensagem recente</p>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   DropdownMenu,
@@ -45,8 +45,10 @@ export function UserNav() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <LogOut className="mr-2 h-4 w-4" />
-          <Link href={'/login'} onClick={() => signOut()}>Sair</Link>
+          <Link className="flex justify-center align-baseline" href={"/login"} onClick={() => signOut()}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Sair</span>
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
