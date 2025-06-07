@@ -15,7 +15,7 @@ export default function Sidebar() {
   const navItems = [
     { name: "Início", icon: Home, href: "/dashboard" },
     { name: "Agenda", icon: Calendar, href: "/agenda" },
-    { name: "Mensagens", icon: Mail, href: "/mensagens" },
+    // { name: "Mensagens", icon: Mail, href: "/mensagens" },
     { name: "Perfil", icon: User, href: "/perfil" },
   ];
 

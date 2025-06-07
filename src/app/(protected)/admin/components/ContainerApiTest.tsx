@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ProfessorAPI from "./ProfessorApi";
+import ProfessorAPI from "./AlunoTurmaManager";
 import AlunoAPI from "./AlunoApi";
 import AdminAPI from "./AdminApi";
 import TokenRegistroAPI from "./TokenRegistroApi";

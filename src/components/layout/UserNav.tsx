@@ -12,18 +12,22 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown, User, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export function UserNav() {
+  const session = useSession()
+  const nameUser = session.data?.user.nome
+  const nameUserformat = nameUser?.toLocaleUpperCase()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 rounded-full gap-2">
           <Avatar className="h-8 w-8">
             <AvatarImage src="/avatars/01.png" alt="Gustavo" />
-            <AvatarFallback>GM</AvatarFallback>
+            <AvatarFallback>{nameUserformat?.charAt(0)}</AvatarFallback>
           </Avatar>
-          <span className="hidden md:inline">Gustavo Martins</span>
+          <span className="hidden md:inline">{nameUserformat ? nameUserformat : "Perfil sem nome."}</span>
           <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

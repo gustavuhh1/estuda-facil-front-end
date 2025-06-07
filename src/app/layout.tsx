@@ -13,6 +13,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/favicon.ico'
+  },
   title: "Estuda Fácil",
   description: "Login e painel de administração da plataforma Estuda Fácil",
 };
