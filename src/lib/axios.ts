@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 
 const api = axios.create({
-  baseURL: "https://estuda-facil-front-end.onrender.com",
+  baseURL: "https://estuda-facil-project.onrender.com",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
