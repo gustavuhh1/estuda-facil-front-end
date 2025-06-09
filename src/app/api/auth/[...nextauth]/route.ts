@@ -20,7 +20,6 @@ export const authOptions: NextAuthOptions = {
         
         if (res.status !== 200) return null;
 
-        console.log(res.data)
         const {token, usuario} = res.data;
 
         return {

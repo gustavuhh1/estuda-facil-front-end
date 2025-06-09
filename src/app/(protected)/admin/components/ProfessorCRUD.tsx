@@ -66,8 +66,6 @@ export function ProfessorCRUD() {
   const onSubmit = async (data: ProfessorFormValues) => {
     setIsLoading(true);
     try {
-      console.log("Dados do formulário:", data);
-      console.log("Editando ID:", editingId);
 
       // Prepara o payload base
       const payload: {

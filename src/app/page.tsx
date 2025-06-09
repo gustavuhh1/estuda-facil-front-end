@@ -9,7 +9,6 @@ export default function App() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(session)
     if (!session) {
       redirect('/login');
     } else {

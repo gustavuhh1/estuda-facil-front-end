@@ -89,7 +89,6 @@ export default function Agenda() {
         setIsLoading(true);
         const response = await api.get("/tarefa");
         setTasks(response.data);
-        console.log(response.data)
       } catch (error) {
         console.error("Erro ao carregar tarefas:", error);
         toast.error("Erro", {
