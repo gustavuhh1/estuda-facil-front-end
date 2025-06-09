@@ -8,7 +8,7 @@ export default function PainelAdminPage() {
     <div>
       <h1 className="text-3xl py-6 px-12">Painel Admin (Restrito)</h1>
       <ContainerApiTest />
-      <Toaster/>
+    <Toaster/>
     </div>
   );
 }

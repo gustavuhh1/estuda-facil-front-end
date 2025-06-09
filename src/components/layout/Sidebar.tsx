@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Home, Calendar, Mail, User, Settings } from "lucide-react";
+import { Home, Calendar, User, Settings } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -28,11 +28,11 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="hidden border-r bg-[#274934] md:block w-[220px]">
+    <div className="hidden border-r bg-sidebar md:block w-[220px]">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-19 items-center border-b px-4 text-white gap-2">
+        <div className="flex h-19 items-center border-b px-4  gap-2">
           <Image src={"/logo.png"} alt="Logo Estuda Fácil" width={40} height={40} />
-          <div className="flex flex-col">
+          <div className="flex flex-col text-white">
             <Link href="/" className="flex items-center gap-2 font-bold text-lg">
               <span>Estuda Fácil</span>
             </Link>
@@ -50,10 +50,10 @@ export default function Sidebar() {
                   key={item.name}
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
-                    "flex w-full items-center px-4 py-5 rounded-md transition-colors justify-between",
+                    "flex w-full bg-sidebar items-center px-4 py-5 rounded-md transition-colors justify-between",
                     pathname === item.href
-                      ? "bg-primary-foreground/10 text-primary-foreground"
-                      : "text-primary-foreground/80 hover:bg-primary-foreground/5 hover:text-primary-foreground"
+                      ? "bg-primary-foreground/20 text-white"
+                      : "text-white/50  hover:bg-primary-foreground/15"
                   )}
                   asChild
                 >

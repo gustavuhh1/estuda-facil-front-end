@@ -12,8 +12,6 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: 'Poppins', monospace;
-    background-color: #fef1e6;
-    color: #111;
   }
 
   button {

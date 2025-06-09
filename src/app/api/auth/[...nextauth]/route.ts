@@ -33,6 +33,10 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/login',
   },
+  jwt: {
+    maxAge: 2 * 24 * 60 * 60,
+
+  },
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {

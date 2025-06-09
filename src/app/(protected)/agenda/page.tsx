@@ -89,6 +89,7 @@ export default function Agenda() {
         setIsLoading(true);
         const response = await api.get("/tarefa");
         setTasks(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error("Erro ao carregar tarefas:", error);
         toast.error("Erro", {
@@ -115,7 +116,6 @@ export default function Agenda() {
         try {
           const response = await api.get("/professor");
           setProfessores(response.data);
-          console.log(JSON.stringify(response.data));
         } catch (error) {
           console.error("Erro ao carregar professores:", error);
         }
@@ -404,7 +404,7 @@ export default function Agenda() {
             <CardTitle>Calendário</CardTitle>
             <CardDescription>Selecione uma data para ver as atividades</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="w-full flex items-center">
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -415,7 +415,7 @@ export default function Agenda() {
                 withTask: isDayWithTask,
               }}
               modifiersClassNames={{
-                withTask: "bg-primary/20 font-bold text-primary",
+                withTask: "bg-primary-foreground font-bold",
               }}
             />
           </CardContent>
@@ -451,8 +451,8 @@ export default function Agenda() {
                                 "Sem disciplina"}
                             </span>
                             <span className="text-sm text-muted-foreground ml-2">
-                              {task.professor?.nome ||
-                                task.turma?.professor ||
+                              {task.turma?.professor ||
+                                task.professor?.id ||
                                 "Professor não informado"}
                             </span>
                           </div>

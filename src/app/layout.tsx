@@ -1,20 +1,21 @@
 import { Poppins } from "next/font/google";
-import "./global.css"
+import "./global.css";
 import GlobalStyle from "@/styles/GlobalStyle";
 import StyledComponentsRegistry from "@/lib/registry"; // se você estiver usando SSR
-import type { Metadata,  } from "next";
+import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProviders } from "./AuthProviders";
+import { ThemeProvider } from "next-themes";
 
 const poppins = Poppins({
   subsets: ["latin"],
   display: "swap",
-  weight: ["100", "200","300", "400", "500", "600", "700", "800", "900"]
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
   icons: {
-    icon: '/favicon.ico'
+    icon: "/favicon.ico",
   },
   title: "Estuda Fácil",
   description: "Login e painel de administração da plataforma Estuda Fácil",
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body>
           <StyledComponentsRegistry>
             <GlobalStyle />
-            {children}
+            <ThemeProvider  defaultTheme={"light"} attribute={"class"}>{children}</ThemeProvider>
             <Toaster closeButton richColors />
           </StyledComponentsRegistry>
         </body>

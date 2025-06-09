@@ -9,5 +9,5 @@ const callbackOptions: NextAuthMiddlewareOptions = {}
 
 export default withAuth(middleware, callbackOptions);
 export const config = {
-    matcher: ['/dashboard', '/mensagens', '/agenda', '/perfil']
+    matcher: ['/dashboard', '/admin', '/agenda', '/perfil']
 }
