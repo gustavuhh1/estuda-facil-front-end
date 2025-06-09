@@ -55,7 +55,6 @@ export const authOptions: NextAuthOptions = {
         role: token.role as
           | "ALUNO"
           | "PROFESSOR"
-          | "RESPONSAVEL"
           | "COORDENACAO",
         nome: token.nome as string,
         dataNascimento: token.dataNascimento as string | Date | null,
@@ -66,7 +65,6 @@ export const authOptions: NextAuthOptions = {
         departamento: token.departamento as string | null | undefined,
         accessToken: token.accessToken as string,
       };
-      console.log("Sessao:::" + JSON.stringify(session));
       return session;
     }
   },

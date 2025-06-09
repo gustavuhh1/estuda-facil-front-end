@@ -3,7 +3,7 @@
 export interface Usuario {
   id: string;
   email: string;
-  role: "ALUNO" | "PROFESSOR" | "RESPONSAVEL" | "COORDENACAO"; // ou use enum se quiser
+  role: "ALUNO" | "PROFESSOR" | "COORDENACAO"; // ou use enum se quiser
   nome: string;
   dataNascimento: string | Date | null;
   matricula?: string;
