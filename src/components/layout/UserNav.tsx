@@ -57,7 +57,7 @@ export function UserNav() {
         <Link
           className="cursor-pointer"
           href={"/login"}
-          onClick={() => signOut({callbackUrl: "/login"})}
+          onClick={() => signOut()}
         >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sair</span>
