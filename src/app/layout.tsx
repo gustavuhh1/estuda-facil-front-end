@@ -1,28 +1,38 @@
-import { Roboto } from "next/font/google";
-import "./global.css"
+import { Poppins } from "next/font/google";
+import "./global.css";
 import GlobalStyle from "@/styles/GlobalStyle";
 import StyledComponentsRegistry from "@/lib/registry"; // se você estiver usando SSR
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProviders } from "./AuthProviders";
+import { ThemeProvider } from "next-themes";
 
-const roboto = Roboto({
+const poppins = Poppins({
   subsets: ["latin"],
-  display: "swap"
-})
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/favicon.ico",
+  },
   title: "Estuda Fácil",
   description: "Login e painel de administração da plataforma Estuda Fácil",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={roboto.className}>
-      <body>
-        <StyledComponentsRegistry>
-          <GlobalStyle />
-          {children}
-        </StyledComponentsRegistry>
-      </body>
-    </html>
+    <AuthProviders>
+      <html lang="pt-BR" className={poppins.className}>
+        <body>
+          <StyledComponentsRegistry>
+            <GlobalStyle />
+            <ThemeProvider  defaultTheme={"light"} attribute={"class"}>{children}</ThemeProvider>
+            <Toaster closeButton richColors />
+          </StyledComponentsRegistry>
+        </body>
+      </html>
+    </AuthProviders>
   );
 }
