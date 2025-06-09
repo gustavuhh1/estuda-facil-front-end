@@ -53,16 +53,16 @@ export function UserNav() {
           <span>Configurações</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link
-            className="flex justify-center align-baseline"
-            href={"/login"}
-            onClick={() => signOut()}
-          >
+          <DropdownMenuItem asChild>
+        <Link
+          className="cursor-pointer"
+          href={"/login"}
+          onClick={() => signOut({callbackUrl: "/login"})}
+        >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sair</span>
-          </Link>
-        </DropdownMenuItem>
+        </Link>
+          </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

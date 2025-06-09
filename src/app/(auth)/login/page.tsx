@@ -20,11 +20,11 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { styled } from "styled-components";
 import { z } from "zod";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const Container = styled.div`
   width: 100%;
@@ -49,6 +49,15 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const {data: session, status} = useSession();
+
+  useEffect(() => {
+    if (status === "loading") return;
+
+    if (session?.user?.accessToken) {
+      router.replace("/dashboard");
+    }
+  }, [router, session, status]);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -69,8 +78,8 @@ export default function LoginPage() {
         redirect: false,
       });
 
-      if(!result?.ok){
-        throw new Error("Email/Senha incorreto. Tente novamente.")
+      if (!result?.ok) {
+        throw new Error("Email/Senha incorreto. Tente novamente.");
       }
       router.push("/dashboard");
     } catch (error) {
