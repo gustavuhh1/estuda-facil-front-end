@@ -17,7 +17,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }
 
   if (isAuthenticated) {
-    return redirect("/login");
+    return redirect("/dashboard");
   }
 
   return children;

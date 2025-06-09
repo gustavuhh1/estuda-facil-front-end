@@ -24,11 +24,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthProviders>
-      <html lang="pt-BR" className={poppins.className}>
-        <body>
+      <html lang="pt-BR" suppressHydrationWarning>
+        <body className={poppins.className}>
           <StyledComponentsRegistry>
             <GlobalStyle />
-            <ThemeProvider  defaultTheme={"light"} attribute={"class"}>{children}</ThemeProvider>
+            <ThemeProvider defaultTheme={"system"} enableSystem attribute={"class"}>
+              {children}
+            </ThemeProvider>
             <Toaster closeButton richColors />
           </StyledComponentsRegistry>
         </body>

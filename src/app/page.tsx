@@ -1,15 +1,15 @@
 "use client";
 
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function App() {
-  const session = getServerSession()
+  const session = useSession()
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
+    if (!session.data?.user.accessToken) {
       redirect('/login');
     } else {
       redirect('/dashboard');
