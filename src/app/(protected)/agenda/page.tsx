@@ -26,36 +26,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@radix-ui/react-label";
 import { useSession } from "next-auth/react";
+import { Professor, Tarefa, Turma } from "@/types";
 
-interface Tarefa {
-  id: number;
-  titulo: string;
-  descricao: string;
-  dataEntrega: string;
-  disciplina: string;
-  turma?: {
-    id: number;
-    nome: string;
-    disciplina: string;
-    professor: string;
-  };
-  professor?: {
-    id: number;
-    nome: string;
-  };
-}
 
-interface Turma {
-  id: number;
-  nome: string;
-  disciplina: string;
-}
-
-interface Professor {
-  id: number;
-  nome: string;
-  disciplina: string;
-}
 
 export default function Agenda() {
   const { data: session } = useSession();
@@ -84,11 +57,40 @@ export default function Agenda() {
   );
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchTasksAndTurmas = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get("/tarefa");
-        setTasks(response.data);
+        const TaskResponse = await api.get("/tarefa");
+        const TurmaResponse = await api.get("/turma");
+
+        const todasTurmas = TurmaResponse.data;
+        const todasTarefas = TaskResponse.data;
+
+        console.log({ tarefas: todasTarefas})
+        // console.log({ turmas: todasTurmas});
+
+        if (session?.user.role === "ALUNO") {
+          const turmaDoAluno = todasTurmas.find((turma: any) =>
+            turma.alunos.some((aluno: any) => aluno.email === session.user.email)
+          );
+          console.log({ TurmaALuno: turmaDoAluno });
+
+          if (turmaDoAluno) {
+            // Filtra tarefas apenas da turma do aluno
+            const tarefasDaTurma = todasTarefas.filter(
+              (tarefa: Tarefa) => tarefa.turmaId === turmaDoAluno.id
+            );
+            console.log(tarefasDaTurma);
+            setTasks(tarefasDaTurma);
+          } else {
+            setTasks([]); // aluno não está em nenhuma turma
+          }
+        } else {
+          // Se for PROFESSOR ou COORDENACAO, vê todas
+          setTasks(todasTarefas);
+        }
+
+        setTurmas(todasTurmas);
       } catch (error) {
         console.error("Erro ao carregar tarefas:", error);
         toast.error("Erro", {
@@ -99,30 +101,16 @@ export default function Agenda() {
       }
     };
 
-    const fetchTurmas = async () => {
-      if (isProfessorOrCoordenacao) {
-        try {
-          const response = await api.get("/turma");
-          setTurmas(response.data);
-        } catch (error) {
-          console.error("Erro ao carregar turmas:", error);
-        }
-      }
-    };
-
     const fetchProfessores = async () => {
-      if (session?.user.role === "COORDENACAO") {
-        try {
-          const response = await api.get("/professor");
-          setProfessores(response.data);
-        } catch (error) {
-          console.error("Erro ao carregar professores:", error);
-        }
+      try {
+        const response = await api.get("/professor");
+        setProfessores(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar professores:", error);
       }
     };
 
-    fetchTasks();
-    fetchTurmas();
+    fetchTasksAndTurmas();
     fetchProfessores();
   }, [isProfessorOrCoordenacao, session]);
 
@@ -334,7 +322,7 @@ export default function Agenda() {
                 <option value="">Selecione uma turma</option>
                 {turmas.map((turma) => (
                   <option key={turma.id} value={turma.id}>
-                    {turma.nome} - {turma.disciplina}
+                    {turma.nome} - {"TODO: disciplina aqui"}
                   </option>
                 ))}
               </select>
@@ -369,6 +357,7 @@ export default function Agenda() {
                       <div>
                         <h3 className="font-medium">{task.titulo}</h3>
                         <p className="text-sm text-muted-foreground">
+                          {/* //FIXME:  */}
                           {formatBackendDate(task.dataEntrega)} -
                           {task.turma?.disciplina || "Sem disciplina"}
                         </p>
@@ -445,6 +434,7 @@ export default function Agenda() {
                           <div className="font-medium">{task.titulo}</div>
                           <div className="flex items-center mt-1">
                             <span className="task-label">
+                              {/* //FIXME:  */}
                               {task.disciplina ||
                                 task.turma?.disciplina ||
                                 "Sem disciplina"}
@@ -495,11 +485,11 @@ export default function Agenda() {
                       <h3 className="font-medium">{task.titulo}</h3>
                       <div className="flex items-center mt-1">
                         <span className="task-label">
-                          {task.disciplina || task.turma?.disciplina || "Sem disciplina"}
+                          {task.disciplina || "disciplina não informada"}
                         </span>
                         <span className="text-sm text-muted-foreground ml-2">
-                          {task.professor?.nome ||
-                            task.turma?.professor ||
+                          {task.professorId ||
+                            task.descricao ||
                             "Professor não informado"}
                         </span>
                       </div>
@@ -528,6 +518,7 @@ export default function Agenda() {
           <DialogHeader>
             <DialogTitle>{selectedTask?.titulo}</DialogTitle>
             <DialogDescription>
+              {/* //FIXME:  */}
               {selectedTask?.professor?.nome ||
                 selectedTask?.turma?.professor ||
                 "Professor não informado"}{" "}
@@ -556,7 +547,7 @@ export default function Agenda() {
                   : "Data não informada"}
               </p>
             </div>
-
+            {/* //FIXME:  */}
             {selectedTask?.turma && (
               <div>
                 <h3 className="font-medium mb-1">Turma</h3>

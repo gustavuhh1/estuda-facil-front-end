@@ -34,7 +34,7 @@ export function AlunoDashboard() {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-
+        // TODO: REALIZAR TROCA DE ROTA POR TAREFAS DE ALUNO
         const tarefasResponse = await api.get("/tarefa");
         const tarefasPendentes = tarefasResponse.data;
 
@@ -47,6 +47,7 @@ export function AlunoDashboard() {
           description: "Não foi possível carregar os dados do dashboard",
         });
       } finally {
+
         setIsLoading(false);
       }
     };
@@ -110,10 +111,10 @@ export function AlunoDashboard() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">***</CardTitle>
+            <CardTitle className="text-lg">Mensagens não lidas</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">sla</div>
+            <div className="text-3xl font-bold">**</div>
             <p className="text-xs text-muted-foreground">mensagem nova</p>
             <div className="mt-4">
               <Link
